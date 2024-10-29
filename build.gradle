@@ -44,12 +44,17 @@ configurations {
 
 dependencies {
     toCopy 'org.json:json:20200518'      
-    implementation configurations.toCopy    
+    implementation files(configurations.toCopy.files)    
 }
 
 task copyToLib(type: Copy) {
     from configurations.toCopy 
     into 'lib'
 }
+
+// Ensure copyToLib runs before compileJava and copyDependencies
+// This was probably a hack, IDK
+tasks.compileJava.dependsOn copyToLib
+tasks.copyDependencies.dependsOn copyToLib
 
 processResources.dependsOn copyToLib
